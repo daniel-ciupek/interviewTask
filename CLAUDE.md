@@ -201,6 +201,26 @@ Agent(frontend-agent)
 
 ---
 
+## Pull Request na końcu projektu
+
+Po zakończeniu wszystkich prac **ostatnim krokiem** jest utworzenie PR:
+
+```bash
+gh pr create \
+  --base main \
+  --head dev \
+  --title "Implementacja aplikacji wiadomości" \
+  --body "Implementacja formularza, tabeli CRUD, migracji Sequelize, RTK Query i ShadCN UI zgodnie z wymaganiami."
+```
+
+Następnie w ustawieniach PR na GitHubie:
+1. Dodaj `@BiznesportTech` jako **Reviewer**
+2. Wejdź w `Settings → Collaborators → Invite a collaborator` i dodaj `@BiznesportTech`
+
+**Nie twórz PR wcześniej** – wszelkie zmiany po otwarciu PR są od razu widoczne dla reviewera.
+
+---
+
 ## Reset bazy przed oddaniem
 
 Jeżeli podczas testów ręcznie edytowano lub usuwano wiadomości, baza może nie zawierać pełnych 3 rekordów z seedera. Przed oddaniem projektu warto zresetować wszystko do stanu początkowego:

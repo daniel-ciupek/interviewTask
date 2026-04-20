@@ -12,6 +12,13 @@ Całość uruchamiana przez `docker compose up`.
 
 ---
 
+## Zasady commitów
+
+- Commity nie mogą zawierać żadnych wzmianek o Claude ani Anthropic (brak `Co-Authored-By` lub podobnych linii)
+- Każdy commit musi wyglądać jak zwykły commit dewelopera
+
+---
+
 ## ZASADY BEZWZGLĘDNE (z README.md)
 
 1. **Nigdy nie używaj `sequelize.sync()`** – tylko migracje sequelize-cli

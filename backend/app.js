@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import { config } from "dotenv";
 import sequelize from "./utils/database.js";
+import messagesRouter from "./routes/messages.js";
 
 // Initialize environment variables
 config();
@@ -10,6 +11,8 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.json());
+
+app.use('/api/messages', messagesRouter);
 
 // Root route
 app.get("/", (req, res) => {
@@ -26,7 +29,7 @@ app.use((error, req, res, next) => {
 });
 
 // DB Connection
-sequelize
+sequelize.authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
     app.listen(process.env.PORT, () => {

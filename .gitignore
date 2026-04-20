@@ -1,0 +1,15 @@
+# IDE
+.idea/
+.vscode/
+
+# Claude local settings (per-user)
+.claude/settings.local.json
+
+# Screenshots and temporary files
+*.png
+*.jpg
+*.jpeg
+
+# OS
+.DS_Store
+Thumbs.db

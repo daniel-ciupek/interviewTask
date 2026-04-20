@@ -26,21 +26,24 @@ export function AddMessageForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 max-w-lg">
-      <Label htmlFor="message">Nowa wiadomość</Label>
-      <div className="flex gap-2">
-        <Input
-          id="message"
-          value={message}
-          onChange={(e) => { setMessage(e.target.value); setError(''); }}
-          placeholder="Wpisz treść wiadomości..."
-          disabled={isLoading}
-        />
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Dodawanie...' : 'Dodaj'}
-        </Button>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="message">Treść wiadomości</Label>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Input
+            id="message"
+            value={message}
+            onChange={(e) => { setMessage(e.target.value); setError(''); }}
+            placeholder="Wpisz treść wiadomości..."
+            disabled={isLoading}
+            className="flex-1"
+          />
+          <Button type="submit" disabled={isLoading} className="sm:w-auto w-full">
+            {isLoading ? 'Dodawanie...' : 'Dodaj wiadomość'}
+          </Button>
+        </div>
+        {error && <p className="text-sm text-destructive">{error}</p>}
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
     </form>
   );
 }

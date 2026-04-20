@@ -12,40 +12,69 @@ export function MessagesTable() {
   const [editMessage, setEditMessage] = useState<Message | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
-  if (isLoading) return <p className="text-muted-foreground">Ładowanie wiadomości...</p>;
-  if (isError) return <p className="text-destructive">Błąd podczas ładowania wiadomości.</p>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12 text-muted-foreground text-sm">
+        Ładowanie wiadomości...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center py-12 text-destructive text-sm">
+        Błąd podczas ładowania wiadomości.
+      </div>
+    );
+  }
 
   return (
     <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-16">ID</TableHead>
-            <TableHead>Wiadomość</TableHead>
-            <TableHead className="w-36 text-right">Akcje</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {messages && messages.length > 0 ? (
-            messages.map((msg) => (
-              <TableRow key={msg.id}>
-                <TableCell className="font-mono text-muted-foreground">{msg.id}</TableCell>
-                <TableCell>{msg.message}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" size="sm" onClick={() => setEditMessage(msg)}>Edytuj</Button>
-                    <Button variant="destructive" size="sm" onClick={() => setDeleteId(msg.id)}>Usuń</Button>
-                  </div>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-16 pl-6">ID</TableHead>
+              <TableHead>Wiadomość</TableHead>
+              <TableHead className="w-40 pr-6 text-right">Akcje</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {messages && messages.length > 0 ? (
+              messages.map((msg) => (
+                <TableRow key={msg.id}>
+                  <TableCell className="font-mono text-muted-foreground pl-6">{msg.id}</TableCell>
+                  <TableCell className="max-w-xs sm:max-w-none break-words">{msg.message}</TableCell>
+                  <TableCell className="pr-6">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditMessage(msg)}
+                      >
+                        Edytuj
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setDeleteId(msg.id)}
+                      >
+                        Usuń
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={3} className="text-center text-muted-foreground py-12">
+                  Brak wiadomości. Dodaj pierwszą wiadomość powyżej.
                 </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={3} className="text-center text-muted-foreground">Brak wiadomości</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       <EditMessageDialog
         message={editMessage}

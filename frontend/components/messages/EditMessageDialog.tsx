@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useUpdateMessageMutation } from '@/store/messagesApi';
 import type { Message } from '@/store/messagesApi';
 import { Button } from '@/components/ui/button';
@@ -29,31 +30,38 @@ export function EditMessageDialog({ message, open, onOpenChange }: Props) {
       await updateMessage({ id: message!.id, message: value.trim() }).unwrap();
       onOpenChange(false);
       setError('');
+      toast.success('Wiadomość została zaktualizowana');
     } catch {
-      setError('Wystąpił błąd podczas edycji');
+      toast.error('Wystąpił błąd podczas edycji');
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Edytuj wiadomość</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="edit-message">Treść wiadomości</Label>
+            <Label htmlFor="edit-message" className="text-muted-foreground text-xs">Treść wiadomości</Label>
             <Input
               id="edit-message"
               value={value}
               onChange={(e) => { setValue(e.target.value); setError(''); }}
               disabled={isLoading}
+              className={error ? 'border-destructive focus-visible:ring-destructive' : ''}
+              autoFocus
             />
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className="text-xs text-destructive">{error}</p>}
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button>
-            <Button type="submit" disabled={isLoading}>{isLoading ? 'Zapisywanie...' : 'Zapisz'}</Button>
+            <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+              Anuluj
+            </Button>
+            <Button type="submit" size="sm" disabled={isLoading}>
+              {isLoading ? 'Zapisywanie...' : 'Zapisz zmiany'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

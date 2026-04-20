@@ -1,39 +1,38 @@
 import { AddMessageForm } from '@/components/messages/AddMessageForm';
 import { MessagesTable } from '@/components/messages/MessagesTable';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-muted/40">
-      <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 sm:py-12 flex flex-col gap-6">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-6xl mx-auto px-4 py-10 sm:px-8">
 
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Wiadomości</h1>
-          <p className="text-muted-foreground text-sm sm:text-base">
+        <header className="mb-8 border-b border-border pb-6">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Wiadomości</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             Zarządzaj wiadomościami w systemie.
           </p>
+        </header>
+
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
+
+          <aside className="w-full lg:w-80 lg:shrink-0">
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h2 className="text-sm font-medium text-foreground mb-1">Nowa wiadomość</h2>
+              <p className="text-xs text-muted-foreground mb-4">Dodaj wiadomość do systemu.</p>
+              <AddMessageForm />
+            </div>
+          </aside>
+
+          <main className="flex-1 min-w-0">
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
+              <div className="px-6 py-4 border-b border-border">
+                <h2 className="text-sm font-medium text-foreground">Lista wiadomości</h2>
+              </div>
+              <MessagesTable />
+            </div>
+          </main>
+
         </div>
-
-        <Card>
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Dodaj wiadomość</CardTitle>
-            <CardDescription>Wpisz treść wiadomości i kliknij Dodaj.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <AddMessageForm />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Lista wiadomości</CardTitle>
-            <CardDescription>Wszystkie wiadomości zapisane w systemie.</CardDescription>
-          </CardHeader>
-          <CardContent className="p-0">
-            <MessagesTable />
-          </CardContent>
-        </Card>
-
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { useAddMessageMutation } from '@/store/messagesApi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 export function AddMessageForm() {
   const [message, setMessage] = useState('');
@@ -20,30 +20,27 @@ export function AddMessageForm() {
       await addMessage({ message: message.trim() }).unwrap();
       setMessage('');
       setError('');
+      toast.success('Wiadomość została dodana');
     } catch {
-      setError('Wystąpił błąd podczas dodawania wiadomości');
+      toast.error('Wystąpił błąd podczas dodawania');
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="message">Treść wiadomości</Label>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <Input
-            id="message"
-            value={message}
-            onChange={(e) => { setMessage(e.target.value); setError(''); }}
-            placeholder="Wpisz treść wiadomości..."
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button type="submit" disabled={isLoading} className="sm:w-auto w-full">
-            {isLoading ? 'Dodawanie...' : 'Dodaj wiadomość'}
-          </Button>
-        </div>
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        <Input
+          value={message}
+          onChange={(e) => { setMessage(e.target.value); setError(''); }}
+          placeholder="Wpisz treść wiadomości..."
+          disabled={isLoading}
+          className={error ? 'border-destructive focus-visible:ring-destructive' : ''}
+        />
+        {error && <p className="text-xs text-destructive">{error}</p>}
       </div>
+      <Button type="submit" disabled={isLoading} className="w-full">
+        {isLoading ? 'Dodawanie...' : 'Dodaj wiadomość'}
+      </Button>
     </form>
   );
 }

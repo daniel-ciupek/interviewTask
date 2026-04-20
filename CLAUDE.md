@@ -198,3 +198,21 @@ Agent(frontend-agent)
 - [ ] UI zbudowane z komponentów ShadCN
 - [ ] Branch `dev` + Pull Request `dev → main`
 - [ ] `@BiznesportTech` jako reviewer
+
+---
+
+## Reset bazy przed oddaniem
+
+Jeżeli podczas testów ręcznie edytowano lub usuwano wiadomości, baza może nie zawierać pełnych 3 rekordów z seedera. Przed oddaniem projektu warto zresetować wszystko do stanu początkowego:
+
+```bash
+docker compose down -v
+docker compose up -d
+docker exec backend_api npx sequelize-cli db:seed:all
+```
+
+- `down -v` – zatrzymuje kontenery i usuwa wolumen `db-vol` (czyści bazę)
+- `up -d` – startuje kontenery, migracje lecą automatycznie (pusta tabela `Messages`)
+- `db:seed:all` – wstawia 3 przykładowe wiadomości z seedera
+
+Po tym projekt jest w czystym stanie: tabela `Messages` istnieje, zawiera dokładnie 3 wiadomości z seedera, frontend działa na `http://localhost:3000`.

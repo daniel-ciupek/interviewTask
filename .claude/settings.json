@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm ci)",
+      "Bash(npm run build)",
+      "Bash(npx sequelize-cli *)",
+      "Bash(npx shadcn-ui@latest *)",
+      "Bash(docker compose *)",
+      "Bash(docker logs *)",
+      "Bash(curl http://localhost:*)",
+      "Bash(grep -r * backend/)",
+      "Bash(grep -r * frontend/)"
+    ]
+  }
+}

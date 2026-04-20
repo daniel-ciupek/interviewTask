@@ -1,6 +1,6 @@
 ---
 name: frontend-agent
-description: Agent wyspecjalizowany w implementacji frontendu Next.js 14 + RTK Query + ShadCN UI. Tworzy formularz, tabelę wiadomości i dialogi CRUD.
+description: Agent wyspecjalizowany w implementacji frontendu Next.js 14 + RTK Query + ShadCN UI. Tworzy formularz, tabelę wiadomości i dialogi CRUD w stylu Premium Enterprise Dark Mode.
 ---
 
 # Frontend Agent – Zakres działania
@@ -10,24 +10,60 @@ description: Agent wyspecjalizowany w implementacji frontendu Next.js 14 + RTK Q
 - TypeScript
 - Tailwind CSS
 - @reduxjs/toolkit + react-redux (RTK Query)
-- ShadCN UI
+- ShadCN UI (komponenty Radix UI, NIE base-ui)
+- lucide-react (bundled z ShadCN)
+- sonner (toast notifications, instalowany przez ShadCN)
 
 ## Zasady bezwzględne
 - **Tylko RTK Query** do komunikacji z backendem – żadnych bezpośrednich `fetch`/`axios`
 - **Tylko ShadCN UI** dla komponentów interfejsu
 - Formularz MUSI mieć walidację po stronie klienta
+- **Dark Mode zawsze włączony** – klasa `dark` na `<html>` w layout.tsx
+
+## Design – Premium Enterprise Dark Mode (styl Vercel/Linear)
+
+### Paleta kolorów (globals.css – zawsze dark mode)
+- Tło strony: `--background: 240 10% 3.9%` (zinc-950)
+- Karty: `--card: 240 10% 5.5%`
+- Akcent (primary): `--primary: 217 91% 60%` (elektryczny błękit)
+- Obramowania: `--border: 240 5% 13%`
+- Tekst pomocniczy: `--muted-foreground: 240 5% 55%`
+
+### Layout (Split-View)
+- Desktop: panel formularza po lewej (`w-80`) + tabela po prawej (flex-1)
+- Mobile: układ pionowy (stacked)
+- Max-width kontenera: `max-w-6xl`
+
+### Akcje w tabeli
+- **NIE używaj** dużych przycisków "Edytuj/Usuń" – tworzą szum wizualny
+- Zamiast tego: `DropdownMenu` z ikoną `MoreHorizontal` (trzy kropki)
+- W menu: `Pencil` icon → Edytuj, `Trash2` icon (czerwony) → Usuń
+- Przyciski ghost z `h-8 w-8`
+
+### Powiadomienia (Toasty)
+- `sonner` z `toast.success()` / `toast.error()`
+- Pozycja: `bottom-right`, tryb `dark`
+- Każda operacja CRUD musi wywoływać toast
 
 ## Instalacja zależności
 
 ```bash
-# W katalogu frontend/
+cd frontend/
 npm install @reduxjs/toolkit react-redux
+npm install @radix-ui/react-dropdown-menu sonner
 
-# ShadCN init (New York style)
-npx shadcn-ui@latest init
+# ShadCN init
+npx shadcn@latest init -d
+```
 
-# Komponenty ShadCN
-npx shadcn-ui@latest add button input form table dialog alert-dialog label toast
+### Ważne: ShadCN może zainstalować komponenty dla Tailwind v4 (base-ui)
+Projekt używa **Tailwind v3** – po `npx shadcn@latest add` sprawdź czy plik nie importuje `@base-ui/react`.
+Jeśli tak, zastąp ręcznie wersją Radix UI (jak w dropdown-menu.tsx i sonner.tsx).
+
+### Komponenty ShadCN do zainstalowania
+```bash
+npx shadcn@latest add button input table dialog alert-dialog label card
+# dropdown-menu i sonner instalować RĘCZNIE (patrz wyżej – problem z base-ui)
 ```
 
 ## Struktura plików
@@ -35,20 +71,25 @@ npx shadcn-ui@latest add button input form table dialog alert-dialog label toast
 ```
 frontend/
   app/
-    layout.tsx          ← dodać ReduxProvider
-    page.tsx            ← główna strona
+    globals.css         ← ciemna paleta CSS vars (dark mode hardcoded)
+    layout.tsx          ← <html class="dark">, ReduxProvider, <Toaster>
+    page.tsx            ← Split-View: aside (formularz) + main (tabela)
     providers.tsx       ← 'use client' wrapper dla Provider
   components/
     messages/
-      MessagesTable.tsx
-      AddMessageForm.tsx
-      EditMessageDialog.tsx
-      DeleteConfirmDialog.tsx
+      MessagesTable.tsx     ← tabela z DropdownMenu akcjami
+      AddMessageForm.tsx    ← formularz z walidacją i toast
+      EditMessageDialog.tsx ← Dialog ShadCN + toast
+      DeleteConfirmDialog.tsx ← AlertDialog ShadCN
+    ui/
+      dropdown-menu.tsx ← Radix UI (NIE base-ui)
+      sonner.tsx        ← theme="dark", bez next-themes
+      ...pozostałe ShadCN
   store/
     store.ts
     messagesApi.ts
   lib/
-    utils.ts            ← auto-generowany przez ShadCN
+    utils.ts
 ```
 
 ## Store i RTK Query
@@ -66,7 +107,9 @@ export interface Message {
 
 export const messagesApi = createApi({
   reducerPath: 'messagesApi',
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  }),
   tagTypes: ['Messages'],
   endpoints: (builder) => ({
     getMessages: builder.query<Message[], void>({
@@ -96,89 +139,61 @@ export const {
 } = messagesApi;
 ```
 
-### store/store.ts
-```typescript
-import { configureStore } from '@reduxjs/toolkit';
-import { messagesApi } from './messagesApi';
-
-export const store = configureStore({
-  reducer: {
-    [messagesApi.reducerPath]: messagesApi.reducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(messagesApi.middleware),
-});
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-```
-
-## Komponenty UI
-
-### MessagesTable.tsx
-- `useGetMessagesQuery()` – pobieranie danych
-- Tabela ShadCN z kolumnami: ID | Wiadomość | Akcje
-- Akcje: `<Button variant="outline">Edytuj</Button>` + `<Button variant="destructive">Usuń</Button>`
-- Stan loading i błędu obsługiwany
-
-### AddMessageForm.tsx
-- Kontrolowany input ShadCN `<Input>`
-- Walidacja: pole wymagane, min 1 znak (trim)
-- `useAddMessageMutation()` – wysyłanie
-- Po sukcesie: wyczyść pole
-- Błędy walidacji wyświetlone inline
-
-### EditMessageDialog.tsx
-- Przyjmuje props: `message: Message`, `open: boolean`, `onOpenChange`
-- ShadCN `<Dialog>` z formularzem wewnątrz
-- `useUpdateMessageMutation()` – zapis
-- Po sukcesie: zamknij dialog
-
-### DeleteConfirmDialog.tsx
-- Przyjmuje props: `messageId: number`, `open: boolean`, `onOpenChange`
-- ShadCN `<AlertDialog>` z pytaniem o potwierdzenie
-- `useDeleteMessageMutation()` – usunięcie
-- Po sukcesie: zamknij dialog
-
-## Providers – layout.tsx
+## layout.tsx – dark mode + Toaster
 
 ```typescript
-// app/providers.tsx ('use client')
-'use client';
-import { Provider } from 'react-redux';
-import { store } from '@/store/store';
-
-export function Providers({ children }: { children: React.ReactNode }) {
-  return <Provider store={store}>{children}</Provider>;
-}
-```
-
-```typescript
-// app/layout.tsx
 import { Providers } from './providers';
-// ...
+import { Toaster } from '@/components/ui/sonner';
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="pl">
+    <html lang="pl" className="dark">
       <body>
         <Providers>{children}</Providers>
+        <Toaster richColors position="bottom-right" />
       </body>
     </html>
   );
 }
 ```
 
+## sonner.tsx – bez next-themes
+
+```typescript
+"use client"
+import { Toaster as Sonner, type ToasterProps } from "sonner"
+
+const Toaster = ({ ...props }: ToasterProps) => (
+  <Sonner
+    theme="dark"
+    className="toaster group"
+    toastOptions={{
+      classNames: {
+        toast: "group-[.toaster]:bg-zinc-900 group-[.toaster]:text-zinc-100 group-[.toaster]:border-zinc-800",
+        description: "group-[.toast]:text-zinc-400",
+      },
+    }}
+    {...props}
+  />
+)
+export { Toaster }
+```
+
 ## Zmienne środowiskowe
 
-W `frontend/` dodaj `.env.local` (lokalnie) i skonfiguruj w docker-compose:
-```
-NEXT_PUBLIC_API_URL=http://backend_api:8080
+`NEXT_PUBLIC_API_URL` musi być przekazany jako **build ARG** w Dockerfile (nie tylko environment):
+
+```dockerfile
+# frontend/Dockerfile
+ARG NEXT_PUBLIC_API_URL=http://localhost:8080
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+RUN npm run build
 ```
 
-W `docker-compose.yml` dla serwisu `frontend`:
 ```yaml
-environment:
-  - NEXT_PUBLIC_API_URL=http://localhost:8080
+# docker-compose.yml
+frontend:
+  build:
+    args:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
 ```
-
-**Uwaga**: W Next.js zmienne `NEXT_PUBLIC_*` są wbudowywane w czasie budowania (build time), więc adres musi być dostępny z przeglądarki użytkownika, nie z kontenera. Użyj `http://localhost:8080` jeśli backend jest na porcie 8080 hosta.

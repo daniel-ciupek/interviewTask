@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useDeleteMessageMutation } from '@/store/messagesApi';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
@@ -15,8 +16,10 @@ export function DeleteConfirmDialog({ messageId, open, onOpenChange }: Props) {
     if (!messageId) return;
     try {
       await deleteMessage(messageId).unwrap();
+      toast.success('Wiadomość została usunięta');
       onOpenChange(false);
     } catch {
+      toast.error('Wystąpił błąd podczas usuwania');
       onOpenChange(false);
     }
   };

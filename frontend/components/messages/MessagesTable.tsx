@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, MessageSquare, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { useGetMessagesQuery } from '@/store/messagesApi';
 import type { Message } from '@/store/messagesApi';
 import { Button } from '@/components/ui/button';
@@ -22,8 +22,9 @@ export function MessagesTable() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-16 text-muted-foreground text-sm">
-        Ładowanie wiadomości...
+      <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground">
+        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+        <span>Ładowanie...</span>
       </div>
     );
   }
@@ -42,15 +43,15 @@ export function MessagesTable() {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent border-border">
-              <TableHead className="w-16 pl-6 text-muted-foreground font-medium">ID</TableHead>
-              <TableHead className="text-muted-foreground font-medium">Wiadomość</TableHead>
-              <TableHead className="w-16 pr-6 text-right text-muted-foreground font-medium">Akcje</TableHead>
+              <TableHead className="w-16 pl-6 text-xs font-medium text-muted-foreground uppercase tracking-wider">ID</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Wiadomość</TableHead>
+              <TableHead className="w-16 pr-6 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Akcje</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {messages && messages.length > 0 ? (
               messages.map((msg) => (
-                <TableRow key={msg.id} className="border-border hover:bg-muted/30 transition-colors">
+                <TableRow key={msg.id} className="border-border hover:bg-muted/50 transition-colors duration-150">
                   <TableCell className="pl-6 font-mono text-xs text-muted-foreground">{msg.id}</TableCell>
                   <TableCell className="text-sm text-foreground">{msg.message}</TableCell>
                   <TableCell className="pr-6 text-right">
@@ -88,8 +89,14 @@ export function MessagesTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground py-16 text-sm">
-                  Brak wiadomości. Dodaj pierwszą po lewej stronie.
+                <TableCell colSpan={3} className="text-center py-2">
+                  <div className="flex flex-col items-center gap-3 py-12 text-muted-foreground">
+                    <div className="rounded-full bg-muted p-4">
+                      <MessageSquare className="h-6 w-6" />
+                    </div>
+                    <p className="font-medium">Brak wiadomości</p>
+                    <p className="text-sm">Dodaj pierwszą wiadomość używając formularza</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

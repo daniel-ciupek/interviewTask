@@ -1,8 +1,5 @@
 Jesteś Ekspertem UI/UX oraz Frontend Developerem (React, Tailwind CSS, ShadCN UI).
 
-Projektujesz interfejs dla Aplikacji Wiadomości (zadanie rekrutacyjne) w stylu **Cyberpunk Neon** – ciemny, nowoczesny, interaktywny design inspirowany terminalami i estetyką hacker/Matrix. Interfejs ma być wysoce profesjonalny, maksymalnie czytelny i intuicyjny – neon jako akcent, nie chaos.
-
----
 
 ### 🚫 OGRANICZENIA TECHNOLOGICZNE (obowiązkowe – z README.md):
 1. Używasz WYŁĄCZNIE **ShadCN UI** i klas **Tailwind CSS**. Nie używasz żadnych innych bibliotek UI.
@@ -11,143 +8,200 @@ Projektujesz interfejs dla Aplikacji Wiadomości (zadanie rekrutacyjne) w stylu 
 
 ---
 
-### 🎨 WYTYCZNE DESIGNU – CYBERPUNK NEON:
 
-#### Paleta kolorów (globals.css – dark mode hardcoded)
+Lista zmian do wprowadzenia
+1. frontend/app/globals.css
+Zastąp obecne zmienne CSS nowymi z sekcji „PALETA KOLORÓW" ze styleguide. Muszą istnieć dwa zestawy: :root (dark, domyślny) i .light (jasny). Zachowaj istniejące klasy @layer base dla body itp.
+2. frontend/tailwind.config.ts
+Upewnij się, że jest ustawione darkMode: 'class'.
+3. frontend/app/layout.tsx
+
+Dodaj inline <script> w <head> eliminujący FOUC (flash of unstyled content) – odczytuje localStorage.getItem('theme') i dodaje klasę do <html> zanim React się załaduje. Domyślna wartość: 'dark'.
+Dodaj <Toaster richColors position="bottom-right" /> jeśli jeszcze nie ma.
+
+4. frontend/components/ui/ThemeToggle.tsx (NOWY PLIK)
+Stwórz komponent zgodnie z kodem z sekcji „PRZEŁĄCZNIK MOTYWU" w styleguide. Komponent:
+
+Odczytuje motyw z localStorage przy montowaniu
+Przełącza klasę dark/light na document.documentElement
+Wyświetla ikonę Sun w dark mode i Moon w light mode
+Ma płynną animację (transition-all duration-300)
+
+5. frontend/app/page.tsx
+Przepisz layout strony:
+
+Header z tytułem „Wiadomości", podtytułem i <ThemeToggle /> wyrównanym do prawej
+Split-view: lewy panel z formularzem (lg:w-80), prawy panel z tabelą (flex-1)
+Na mobile: układ pionowy
+Karty z klasami: rounded-xl border border-border bg-card
+Hover na karcie formularza: hover:border-primary/30 transition-colors duration-300
+
+6. frontend/components/messages/AddMessageForm.tsx
+Zaktualizuj stylowanie:
+
+Label: text-xs font-medium text-muted-foreground uppercase tracking-wide
+Input z ring-primary na focus, czerwone obramowanie przy błędzie
+Button w-full z dark-mode glow: dark:shadow-[0_0_12px_rgba(52,211,153,0.2)] dark:hover:shadow-[0_0_20px_rgba(52,211,153,0.35)]
+Wszystkie stany (loading, error) zachowane
+
+7. frontend/components/messages/MessagesTable.tsx
+Zaktualizuj stylowanie tabeli:
+
+Nagłówki: text-xs font-medium text-muted-foreground uppercase tracking-wider
+Kolumna ID: font-mono text-xs text-muted-foreground
+Hover wiersza: hover:bg-muted/50 transition-colors duration-150
+Empty state: ikona MessageSquare w okrągłym bg-muted kontenerze + dwa teksty
+Loading state: Loader2 animate-spin text-primary + tekst „Ładowanie..."
+Zachowaj istniejącą logikę editMessage / deleteId i dialogi
+
+8. frontend/components/messages/EditMessageDialog.tsx
+Zaktualizuj stylowanie dialogu:
+
+DialogContent używa bg-card border-border przez ShadCN (zmienne CSS – bez hardcode)
+DialogTitle: font-semibold text-foreground
+Przyciski: Cancel = variant="outline", Save = variant="default"
+Zachowaj całą logikę formularza i walidacji
+
+9. frontend/components/messages/DeleteConfirmDialog.tsx
+Zaktualizuj stylowanie:
+
+Używaj zmiennych ShadCN przez variant="destructive" na przycisku usuwania
+Zachowaj całą logikę
+
+
+Wymagania jakościowe
+
+Żadnych nowych zależności – tylko ShadCN UI, Tailwind CSS, lucide-react, sonner, @radix-ui/*
+Wszystkie klasy przez Tailwind – bez inline styles, bez CSS Modules
+Każdy komponent musi poprawnie wyglądać w obu motywach – przetestuj mentalnie dark i light
+Dark-mode specyficzne efekty (glow, shadow) przez prefix dark: w Tailwind
+Pełna responsywność: mobile (< lg) i desktop (lg+)
+Bez regrесji funkcjonalnych – RTK Query, walidacja, dialogi muszą działać bez zmian
+
+
+Kolejność pracy
+
+globals.css → zmienne CSS
+tailwind.config.ts → darkMode: 'class'
+ThemeToggle.tsx → nowy komponent
+layout.tsx → script FOUC + ThemeToggle import
+page.tsx → layout + header
+AddMessageForm.tsx → style
+MessagesTable.tsx → style + empty/loading state
+EditMessageDialog.tsx → style
+DeleteConfirmDialog.tsx → style
+
+Po każdej zmianie upewnij się, że TypeScript nie zgłasza błędów typów w zmienionym pliku.
+
+---
+
+## PALETA KOLORÓW
+
+### Dark mode (domyślny) – Cyberpunk Neon
+
 ```css
---background: 0 0% 2%;           /* #050505 – prawie czarne */
---foreground: 0 0% 95%;          /* jasna biel tekstu */
---card: 0 0% 4%;                 /* #0a0a0a – karty nieco jaśniejsze */
---card-foreground: 0 0% 95%;
---primary: 158 100% 50%;         /* #00ff94 – neonowa zieleń/cyjan */
---primary-foreground: 0 0% 2%;   /* czarny tekst na neonowym tle */
---secondary: 0 0% 8%;
---secondary-foreground: 0 0% 95%;
---muted: 0 0% 8%;
---muted-foreground: 0 0% 45%;    /* przygaszone opisy */
---accent: 180 100% 50%;          /* #00ffff – elektryczny cyjan jako drugi akcent */
---border: 158 100% 20%;          /* ciemna neonowa zieleń – subtelne obramowania */
---input: 0 0% 8%;
---ring: 158 100% 50%;
---destructive: 0 90% 55%;        /* czerwony dla usuwania */
---destructive-foreground: 0 0% 98%;
---radius: 0.375rem;
+:root {
+  --background: 160 15% 4%;
+  --foreground: 160 20% 95%;
+  --card: 160 12% 7%;
+  --card-foreground: 160 20% 95%;
+  --popover: 160 12% 7%;
+  --popover-foreground: 160 20% 95%;
+  --primary: 160 75% 51%;
+  --primary-foreground: 160 15% 4%;
+  --secondary: 160 10% 12%;
+  --secondary-foreground: 160 20% 90%;
+  --muted: 160 10% 12%;
+  --muted-foreground: 160 8% 50%;
+  --accent: 160 20% 15%;
+  --accent-foreground: 160 20% 95%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 160 15% 15%;
+  --input: 160 15% 15%;
+  --ring: 160 75% 51%;
+  --radius: 0.5rem;
+}
 ```
 
-#### Typografia
-- Font: **GeistMono** dla ID, kodów i etykiet (monospace) – już zainstalowany w projekcie
-- Font: **GeistSans** dla treści i nagłówków – już zainstalowany
-- Nagłówek strony: `text-2xl font-bold tracking-widest uppercase text-emerald-400`
-- Podtytuł: `text-xs text-zinc-500 tracking-widest uppercase`
-- Tekst tabeli: `font-mono text-sm`
+### Light mode
 
-#### Glowing Effects (Tailwind only – przez `shadow-*` i `ring-*`)
-- Przyciski primary: `shadow-[0_0_15px_rgba(0,255,148,0.4)] hover:shadow-[0_0_25px_rgba(0,255,148,0.6)]`
-- Karty/kontenery na hover: `hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(0,255,148,0.1)]`
-- Input focus: `focus-visible:ring-emerald-500 focus-visible:border-emerald-500`
-- Wiersze tabeli na hover: `hover:bg-emerald-950/30 hover:border-l-2 hover:border-l-emerald-500`
-
-#### Obramowania i kontenery
-- Karty: `border border-emerald-900/50 bg-zinc-950/80 rounded-lg`
-- Tabela: `border-collapse` z `border-b border-emerald-900/30` na wierszach
-- Header tabeli: `border-b border-emerald-500/30 text-emerald-500 text-xs uppercase tracking-widest`
-- Separator między sekcjami: `border-t border-emerald-900/40`
-
-#### Przyciski
-- Primary (Dodaj): ciemne tło z neonowym obramowaniem i glow
-  `border border-emerald-500 text-emerald-400 bg-emerald-950/50 hover:bg-emerald-500 hover:text-black transition-all shadow-[0_0_10px_rgba(0,255,148,0.3)] hover:shadow-[0_0_20px_rgba(0,255,148,0.5)]`
-- Ghost (akcje w tabeli): `text-zinc-500 hover:text-emerald-400 hover:bg-emerald-950/30`
-- Destructive: `text-red-500 hover:text-red-400 hover:bg-red-950/30`
+```css
+.light {
+  --background: 0 0% 98%;
+  --foreground: 220 13% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 13% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 13% 10%;
+  --primary: 160 75% 35%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 220 13% 93%;
+  --secondary-foreground: 220 13% 20%;
+  --muted: 220 13% 93%;
+  --muted-foreground: 220 9% 45%;
+  --accent: 160 30% 90%;
+  --accent-foreground: 160 75% 25%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 220 13% 88%;
+  --input: 220 13% 88%;
+  --ring: 160 75% 35%;
+  --radius: 0.5rem;
+}
+```
 
 ---
 
-### 📐 LAYOUT I RESPONSYWNOŚĆ:
+## PRZEŁĄCZNIK MOTYWU
 
-#### Desktop (lg+): Split-View
-```
-┌─────────────────────────────────────────────────────┐
-│  > WIADOMOŚCI_                    [terminal header]  │
-├──────────────────┬──────────────────────────────────┤
-│  [NOWA WIADOMOŚĆ]│  ID  │ WIADOMOŚĆ        │ AKCJE  │
-│                  │──────┼──────────────────┼────────│
-│  ┌─────────────┐ │   1  │ Przykład...      │  ⋯    │
-│  │ input       │ │   2  │ Druga...         │  ⋯    │
-│  └─────────────┘ │   3  │ Trzecia...       │  ⋯    │
-│  [DODAJ ▶]       │                                  │
-└──────────────────┴──────────────────────────────────┘
-```
-- Lewy panel: `w-full lg:w-72 shrink-0`
-- Prawy panel: `flex-1 min-w-0`
+### frontend/components/ui/ThemeToggle.tsx
 
-#### Mobile (do lg): Układ pionowy
-- Formularz na górze, tabela pod spodem
-- Pełna szerokość obu sekcji
-- Padding: `px-4 py-6`
-- Przyciski: pełna szerokość `w-full`
-- Tabela: `overflow-x-auto` z poziomym scrollem jeśli potrzeba
-
----
-
-### 🖥️ SZCZEGÓŁY KOMPONENTÓW:
-
-#### Header strony (`app/page.tsx`)
 ```tsx
-<header>
-  <div className="flex items-center gap-2 mb-1">
-    <span className="text-emerald-500 font-mono text-lg">▶</span>
-    <h1 className="text-xl font-bold tracking-widest uppercase text-white">
-      Wiadomości
-    </h1>
-    <span className="text-emerald-500 animate-pulse">_</span>
-  </div>
-  <p className="text-xs text-zinc-500 tracking-widest uppercase ml-6">
-    System zarządzania wiadomościami
-  </p>
-</header>
+"use client";
+import { useEffect, useState } from "react";
+import { Sun, Moon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export function ThemeToggle() {
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme") as "dark" | "light" | null;
+    const initial = saved ?? "dark";
+    setTheme(initial);
+    document.documentElement.classList.toggle("light", initial === "light");
+  }, []);
+
+  const toggle = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("theme", next);
+    document.documentElement.classList.toggle("light", next === "light");
+  };
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={toggle}
+      className="transition-all duration-300"
+    >
+      {theme === "dark" ? (
+        <Sun className="h-4 w-4" />
+      ) : (
+        <Moon className="h-4 w-4" />
+      )}
+    </Button>
+  );
+}
 ```
 
-#### Formularz (`AddMessageForm.tsx`)
-- Label: `text-xs text-emerald-500 uppercase tracking-widest font-mono`
-- Input: ciemne tło, neonowe obramowanie na focus, czerwone przy błędzie
-- Błąd walidacji: `text-red-400 text-xs font-mono` z prefiksem `! `
-- Button: outline neonowy z glow efektem
+### FOUC prevention script (do layout.tsx w sekcji `<head>`):
 
-#### Tabela (`MessagesTable.tsx`)
-- Nagłówki: `text-emerald-500/70 text-xs uppercase tracking-widest font-mono`
-- ID kolumna: `font-mono text-emerald-600 text-xs` – jak adres w terminalu
-- Wiadomość: `text-zinc-200 text-sm`
-- Hover wiersza: delikatny zielony pasek po lewej + ciemne zielone tło
-- Akcje: `DropdownMenu` z ikoną `MoreHorizontal` (ghost button)
-- W menu: `Pencil` → Edytuj (zielony), `Trash2` → Usuń (czerwony)
-
-#### Empty state tabeli
-```tsx
-<div className="flex flex-col items-center py-16 gap-2">
-  <span className="text-2xl text-emerald-900">▓▒░</span>
-  <p className="text-zinc-600 font-mono text-sm">// brak danych</p>
-</div>
+```html
+<script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme')||'dark';if(t==='light')document.documentElement.classList.add('light');})();` }} />
 ```
-
-#### Loading state
-```tsx
-<div className="flex items-center gap-2 py-16 justify-center">
-  <span className="text-emerald-500 font-mono text-sm animate-pulse">
-    ▶ ładowanie danych...
-  </span>
-</div>
-```
-
-#### Dialogi (Edit i Delete)
-- `DialogContent`: `bg-zinc-950 border-emerald-800`
-- `DialogTitle`: `text-emerald-400 font-mono uppercase tracking-wider`
-- Input w dialogu: te same zasady co formularz główny
-- Przyciski: Cancel = outline zinc, Save = neonowy primary, Delete = czerwony destructive
-
-#### Toasty (Sonner – dark)
-- Success: `toast.success('// wiadomość dodana')` – zielony
-- Error: `toast.error('! błąd operacji')` – czerwony
-- Pozycja: `bottom-right`
-- Styl terminalowy: monospace prefix w treści
 
 ---
 

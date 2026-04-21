@@ -40,11 +40,13 @@ export function EditMessageDialog({ message, open, onOpenChange }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edytuj wiadomość</DialogTitle>
+          <DialogTitle className="font-semibold text-foreground">Edytuj wiadomość</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="edit-message" className="text-muted-foreground text-xs">Treść wiadomości</Label>
+            <Label htmlFor="edit-message" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Treść wiadomości
+            </Label>
             <Input
               id="edit-message"
               value={value}
@@ -59,7 +61,7 @@ export function EditMessageDialog({ message, open, onOpenChange }: Props) {
             <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)}>
               Anuluj
             </Button>
-            <Button type="submit" size="sm" disabled={isLoading}>
+            <Button type="submit" variant="default" size="sm" disabled={isLoading}>
               {isLoading ? 'Zapisywanie...' : 'Zapisz zmiany'}
             </Button>
           </DialogFooter>

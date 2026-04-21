@@ -32,7 +32,11 @@ export function DeleteConfirmDialog({ messageId, open, onOpenChange }: Props) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Anuluj</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} disabled={isLoading} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+          <AlertDialogAction
+            onClick={handleDelete}
+            disabled={isLoading}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
             {isLoading ? 'Usuwanie...' : 'Usuń'}
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -1,22 +1,28 @@
 import { AddMessageForm } from '@/components/messages/AddMessageForm';
 import { MessagesTable } from '@/components/messages/MessagesTable';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-4 py-10 sm:px-8">
 
-        <header className="mb-8 border-b border-border pb-6">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Wiadomości</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Zarządzaj wiadomościami w systemie.
-          </p>
+        <header className="mb-8 border-b border-border pb-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight bg-gradient-to-r from-primary to-emerald-300 bg-clip-text text-transparent">
+              Wiadomości
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Zarządzaj wiadomościami w systemie.
+            </p>
+          </div>
+          <ThemeToggle />
         </header>
 
         <div className="flex flex-col lg:flex-row gap-6 items-start">
 
           <aside className="w-full lg:w-80 lg:shrink-0">
-            <div className="rounded-xl border border-border bg-card p-6">
+            <div className="rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors duration-300">
               <h2 className="text-sm font-medium text-foreground mb-1">Nowa wiadomość</h2>
               <p className="text-xs text-muted-foreground mb-4">Dodaj wiadomość do systemu.</p>
               <AddMessageForm />

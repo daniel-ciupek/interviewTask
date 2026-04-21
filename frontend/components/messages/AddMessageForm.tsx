@@ -28,9 +28,12 @@ export function AddMessageForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="add-message" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+        <Label
+          htmlFor="add-message"
+          className="text-xs font-medium text-muted-foreground uppercase tracking-widest"
+        >
           Treść wiadomości
         </Label>
         <Input
@@ -39,14 +42,24 @@ export function AddMessageForm() {
           onChange={(e) => { setMessage(e.target.value); setError(''); }}
           placeholder="Wpisz treść wiadomości..."
           disabled={isLoading}
-          className={error ? 'border-destructive focus-visible:ring-destructive' : 'focus-visible:ring-primary'}
+          className={
+            error
+              ? 'border-destructive focus-visible:ring-destructive'
+              : 'focus-visible:ring-primary dark:focus-visible:shadow-[0_0_12px_rgba(52,211,153,0.25)] transition-shadow duration-200'
+          }
         />
-        {error && <p className="text-xs text-destructive">{error}</p>}
+        {error && (
+          <p className="text-xs text-destructive animate-float-in">{error}</p>
+        )}
       </div>
       <Button
         type="submit"
         disabled={isLoading}
-        className="w-full shadow-[0_0_12px_rgba(52,211,153,0.2)] hover:shadow-[0_0_20px_rgba(52,211,153,0.35)] transition-shadow duration-300"
+        className="w-full
+          dark:animate-neon-pulse
+          animate-neon-pulse-light
+          hover:scale-[1.02] active:scale-[0.98]
+          transition-transform duration-150"
       >
         {isLoading ? 'Dodawanie...' : 'Dodaj wiadomość'}
       </Button>

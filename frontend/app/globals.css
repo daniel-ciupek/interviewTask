@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  /* Light mode – domyślny :root (Tailwind dark: prefix działa przez klasę .dark na <html>) */
+  /* Light mode – domyślny :root */
   :root {
     --background: 0 0% 98%;
     --foreground: 220 13% 10%;
@@ -59,4 +59,81 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ─── Cursor glow overlay ─── */
+.cursor-glow {
+  background: radial-gradient(
+    700px circle at var(--cx, -500px) var(--cy, -500px),
+    rgba(16, 185, 129, 0.035),
+    transparent 40%
+  );
+}
+.dark .cursor-glow {
+  background: radial-gradient(
+    700px circle at var(--cx, -500px) var(--cy, -500px),
+    rgba(52, 211, 153, 0.07),
+    transparent 40%
+  );
+}
+
+/* ─── Dot grid background ─── */
+.bg-dot-grid {
+  background-image: radial-gradient(circle, rgba(16, 185, 129, 0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.dark .bg-dot-grid {
+  background-image: radial-gradient(circle, rgba(52, 211, 153, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ─── Neon animations ─── */
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(52, 211, 153, 0.15), 0 0 0 1px rgba(52, 211, 153, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(52, 211, 153, 0.35), 0 0 0 1px rgba(52, 211, 153, 0.25);
+  }
+}
+
+@keyframes neon-pulse-light {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.12), 0 4px 20px rgba(16, 185, 129, 0.06);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.22), 0 4px 30px rgba(16, 185, 129, 0.1);
+  }
+}
+
+@keyframes border-flow {
+  0% { border-color: rgba(52, 211, 153, 0.15); }
+  50% { border-color: rgba(52, 211, 153, 0.45); }
+  100% { border-color: rgba(52, 211, 153, 0.15); }
+}
+
+@keyframes float-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 3s ease-in-out infinite;
+}
+.animate-neon-pulse-light {
+  animation: neon-pulse-light 3s ease-in-out infinite;
+}
+.animate-border-flow {
+  animation: border-flow 4s ease-in-out infinite;
+}
+.animate-float-in {
+  animation: float-in 0.4s ease-out both;
+}
+
+/* ─── Neon text glow ─── */
+.text-neon-glow {
+  filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.5));
+}
+:root .text-neon-glow {
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.3));
 }

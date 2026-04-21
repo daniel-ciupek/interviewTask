@@ -22,9 +22,9 @@ export function MessagesTable() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground">
-        <Loader2 className="h-5 w-5 animate-spin text-primary" />
-        <span>Ładowanie...</span>
+      <div className="flex flex-col items-center justify-center gap-3 py-16 text-muted-foreground">
+        <Loader2 className="h-6 w-6 animate-spin text-primary dark:[filter:drop-shadow(0_0_6px_rgba(52,211,153,0.6))]" />
+        <span className="text-sm">Ładowanie...</span>
       </div>
     );
   }
@@ -43,16 +43,27 @@ export function MessagesTable() {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent border-border">
-              <TableHead className="w-16 pl-6 text-xs font-medium text-muted-foreground uppercase tracking-wider">ID</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Wiadomość</TableHead>
-              <TableHead className="w-16 pr-6 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Akcje</TableHead>
+              <TableHead className="w-16 pl-6 text-xs font-medium text-muted-foreground uppercase tracking-widest">ID</TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Wiadomość</TableHead>
+              <TableHead className="w-16 pr-6 text-right text-xs font-medium text-muted-foreground uppercase tracking-widest">Akcje</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {messages && messages.length > 0 ? (
-              messages.map((msg) => (
-                <TableRow key={msg.id} className="border-border hover:bg-muted/50 transition-colors duration-150">
-                  <TableCell className="pl-6 font-mono text-xs text-muted-foreground">{msg.id}</TableCell>
+              messages.map((msg, i) => (
+                <TableRow
+                  key={msg.id}
+                  className="border-border group
+                    hover:bg-muted/40
+                    dark:hover:bg-primary/5
+                    dark:hover:shadow-[inset_3px_0_0_rgba(52,211,153,0.6)]
+                    hover:shadow-[inset_3px_0_0_rgba(16,185,129,0.5)]
+                    transition-all duration-150 animate-float-in"
+                  style={{ animationDelay: `${i * 40}ms` }}
+                >
+                  <TableCell className="pl-6 font-mono text-xs text-muted-foreground group-hover:text-primary transition-colors duration-150">
+                    {msg.id}
+                  </TableCell>
                   <TableCell className="text-sm text-foreground">{msg.message}</TableCell>
                   <TableCell className="pr-6 text-right">
                     <DropdownMenu>
@@ -60,7 +71,7 @@ export function MessagesTable() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                          className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors duration-150"
                         >
                           <MoreHorizontal className="h-4 w-4" />
                           <span className="sr-only">Akcje</span>
@@ -90,12 +101,12 @@ export function MessagesTable() {
             ) : (
               <TableRow>
                 <TableCell colSpan={3} className="text-center py-2">
-                  <div className="flex flex-col items-center gap-3 py-12 text-muted-foreground">
-                    <div className="rounded-full bg-muted p-4">
+                  <div className="flex flex-col items-center gap-3 py-14 text-muted-foreground animate-float-in">
+                    <div className="rounded-full bg-muted p-4 dark:shadow-[0_0_20px_rgba(52,211,153,0.1)]">
                       <MessageSquare className="h-6 w-6" />
                     </div>
                     <p className="font-medium">Brak wiadomości</p>
-                    <p className="text-sm">Dodaj pierwszą wiadomość używając formularza</p>
+                    <p className="text-sm opacity-70">Dodaj pierwszą wiadomość używając formularza</p>
                   </div>
                 </TableCell>
               </TableRow>

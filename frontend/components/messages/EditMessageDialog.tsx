@@ -38,7 +38,7 @@ export function EditMessageDialog({ message, open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-md rounded-xl mx-auto">
         <DialogHeader>
           <DialogTitle className="font-semibold text-foreground">Edytuj wiadomość</DialogTitle>
         </DialogHeader>
@@ -57,11 +57,11 @@ export function EditMessageDialog({ message, open, onOpenChange }: Props) {
             />
             {error && <p className="text-xs text-destructive">{error}</p>}
           </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+          <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-0">
+            <Button type="button" variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => onOpenChange(false)}>
               Anuluj
             </Button>
-            <Button type="submit" variant="default" size="sm" disabled={isLoading}>
+            <Button type="submit" variant="default" size="sm" className="w-full sm:w-auto" disabled={isLoading}>
               {isLoading ? 'Zapisywanie...' : 'Zapisz zmiany'}
             </Button>
           </DialogFooter>

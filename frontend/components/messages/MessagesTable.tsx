@@ -31,7 +31,7 @@ export function MessagesTable() {
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center py-16 text-destructive text-sm">
+      <div className="flex items-center justify-center py-16 text-destructive text-sm px-4 text-center">
         Błąd podczas ładowania wiadomości.
       </div>
     );
@@ -39,13 +39,20 @@ export function MessagesTable() {
 
   return (
     <>
-      <div className="overflow-x-auto">
-        <Table>
+      {/* overflow-x-auto pozwala tabeli scrollować się poziomo na wąskich ekranach */}
+      <div className="w-full overflow-x-auto">
+        <Table className="min-w-[320px]">
           <TableHeader>
             <TableRow className="hover:bg-transparent border-border">
-              <TableHead className="w-16 pl-6 text-xs font-medium text-muted-foreground uppercase tracking-widest">ID</TableHead>
-              <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Wiadomość</TableHead>
-              <TableHead className="w-16 pr-6 text-right text-xs font-medium text-muted-foreground uppercase tracking-widest">Akcje</TableHead>
+              <TableHead className="w-12 sm:w-16 pl-3 sm:pl-6 text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                ID
+              </TableHead>
+              <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                Wiadomość
+              </TableHead>
+              <TableHead className="w-12 sm:w-16 pr-3 sm:pr-6 text-right text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                Akcje
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -61,11 +68,15 @@ export function MessagesTable() {
                     transition-all duration-150 animate-float-in"
                   style={{ animationDelay: `${i * 40}ms` }}
                 >
-                  <TableCell className="pl-6 font-mono text-xs text-muted-foreground group-hover:text-primary transition-colors duration-150">
+                  <TableCell className="pl-3 sm:pl-6 font-mono text-xs text-muted-foreground group-hover:text-primary transition-colors duration-150">
                     {msg.id}
                   </TableCell>
-                  <TableCell className="text-sm text-foreground">{msg.message}</TableCell>
-                  <TableCell className="pr-6 text-right">
+                  <TableCell className="text-sm text-foreground py-3">
+                    <span className="block break-words max-w-[200px] sm:max-w-none">
+                      {msg.message}
+                    </span>
+                  </TableCell>
+                  <TableCell className="pr-3 sm:pr-6 text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -101,12 +112,12 @@ export function MessagesTable() {
             ) : (
               <TableRow>
                 <TableCell colSpan={3} className="text-center py-2">
-                  <div className="flex flex-col items-center gap-3 py-14 text-muted-foreground animate-float-in">
+                  <div className="flex flex-col items-center gap-3 py-12 sm:py-14 text-muted-foreground animate-float-in px-4">
                     <div className="rounded-full bg-muted p-4 dark:shadow-[0_0_20px_rgba(52,211,153,0.1)]">
                       <MessageSquare className="h-6 w-6" />
                     </div>
                     <p className="font-medium">Brak wiadomości</p>
-                    <p className="text-sm opacity-70">Dodaj pierwszą wiadomość używając formularza</p>
+                    <p className="text-sm opacity-70 text-center">Dodaj pierwszą wiadomość używając formularza</p>
                   </div>
                 </TableCell>
               </TableRow>

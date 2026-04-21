@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme')||'dark';if(t==='light')document.documentElement.classList.add('light');})();` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme')||'dark';if(t==='dark')document.documentElement.classList.add('dark');})();` }} />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>{children}</Providers>

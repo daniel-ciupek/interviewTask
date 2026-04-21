@@ -7,6 +7,9 @@ services:
       - 8081:80
     networks:
       - backend
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
 
   db:
     container_name: mysql
@@ -14,13 +17,19 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: interview123
+      MYSQL_DATABASE: interview
     ports:
       - "3306:3306"
     networks:
       - backend
     volumes:
       - db-vol:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pinterview123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   backend:
     container_name: backend_api
@@ -33,7 +42,10 @@ services:
     networks:
       - backend
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    env_file:
+      - backend/.env
 
   frontend:
     container_name: next_frontend
@@ -41,6 +53,8 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8080
     networks:
       - backend
     ports:

@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Light mode – domyślny :root */
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 220 13% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 10%;
+    --primary: 160 75% 35%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 220 13% 93%;
+    --secondary-foreground: 220 13% 20%;
+    --muted: 220 13% 93%;
+    --muted-foreground: 220 9% 45%;
+    --accent: 160 30% 90%;
+    --accent-foreground: 160 75% 25%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 160 75% 35%;
+    --radius: 0.5rem;
+  }
+
+  /* Dark mode – Cyberpunk Neon, aktywowany klasą .dark na <html> */
+  .dark {
+    --background: 160 15% 4%;
+    --foreground: 160 20% 95%;
+    --card: 160 12% 7%;
+    --card-foreground: 160 20% 95%;
+    --popover: 160 12% 7%;
+    --popover-foreground: 160 20% 95%;
+    --primary: 160 75% 51%;
+    --primary-foreground: 160 15% 4%;
+    --secondary: 160 10% 12%;
+    --secondary-foreground: 160 20% 90%;
+    --muted: 160 10% 12%;
+    --muted-foreground: 160 8% 50%;
+    --accent: 160 20% 15%;
+    --accent-foreground: 160 20% 95%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 160 15% 15%;
+    --input: 160 15% 15%;
+    --ring: 160 75% 51%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ─── Cursor glow overlay ─── */
+.cursor-glow {
+  background: radial-gradient(
+    700px circle at var(--cx, -500px) var(--cy, -500px),
+    rgba(16, 185, 129, 0.035),
+    transparent 40%
+  );
+}
+.dark .cursor-glow {
+  background: radial-gradient(
+    700px circle at var(--cx, -500px) var(--cy, -500px),
+    rgba(52, 211, 153, 0.07),
+    transparent 40%
+  );
+}
+
+/* ─── Dot grid background ─── */
+.bg-dot-grid {
+  background-image: radial-gradient(circle, rgba(16, 185, 129, 0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.dark .bg-dot-grid {
+  background-image: radial-gradient(circle, rgba(52, 211, 153, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ─── Neon animations ─── */
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(52, 211, 153, 0.15), 0 0 0 1px rgba(52, 211, 153, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(52, 211, 153, 0.35), 0 0 0 1px rgba(52, 211, 153, 0.25);
+  }
+}
+
+@keyframes neon-pulse-light {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.12), 0 4px 20px rgba(16, 185, 129, 0.06);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.22), 0 4px 30px rgba(16, 185, 129, 0.1);
+  }
+}
+
+@keyframes border-flow {
+  0% { border-color: rgba(52, 211, 153, 0.15); }
+  50% { border-color: rgba(52, 211, 153, 0.45); }
+  100% { border-color: rgba(52, 211, 153, 0.15); }
+}
+
+@keyframes float-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 3s ease-in-out infinite;
+}
+.animate-neon-pulse-light {
+  animation: neon-pulse-light 3s ease-in-out infinite;
+}
+.animate-border-flow {
+  animation: border-flow 4s ease-in-out infinite;
+}
+.animate-float-in {
+  animation: float-in 0.4s ease-out both;
+}
+
+/* ─── Neon text glow ─── */
+.text-neon-glow {
+  filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.5));
+}
+:root .text-neon-glow {
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.3));
+}

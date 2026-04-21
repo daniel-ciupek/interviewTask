@@ -1,6 +1,4 @@
-FROM node:16 AS development
-
-ENV NODE_ENV=development
+FROM node:18-alpine
 
 WORKDIR /usr/src/backend
 
@@ -12,4 +10,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD ["npm", "start"]
+CMD ["sh", "-c", "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && node app.js"]

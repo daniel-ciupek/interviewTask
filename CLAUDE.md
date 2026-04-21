@@ -12,6 +12,13 @@ Całość uruchamiana przez `docker compose up`.
 
 ---
 
+## Zasady commitów
+
+- Commity nie mogą zawierać żadnych wzmianek o Claude ani Anthropic (brak `Co-Authored-By` lub podobnych linii)
+- Każdy commit musi wyglądać jak zwykły commit dewelopera
+
+---
+
 ## ZASADY BEZWZGLĘDNE (z README.md)
 
 1. **Nigdy nie używaj `sequelize.sync()`** – tylko migracje sequelize-cli
@@ -191,3 +198,41 @@ Agent(frontend-agent)
 - [ ] UI zbudowane z komponentów ShadCN
 - [ ] Branch `dev` + Pull Request `dev → main`
 - [ ] `@BiznesportTech` jako reviewer
+
+---
+
+## Pull Request na końcu projektu
+
+Po zakończeniu wszystkich prac **ostatnim krokiem** jest utworzenie PR:
+
+```bash
+gh pr create \
+  --base main \
+  --head dev \
+  --title "Implementacja aplikacji wiadomości" \
+  --body "Implementacja formularza, tabeli CRUD, migracji Sequelize, RTK Query i ShadCN UI zgodnie z wymaganiami."
+```
+
+Następnie w ustawieniach PR na GitHubie:
+1. Dodaj `@BiznesportTech` jako **Reviewer**
+2. Wejdź w `Settings → Collaborators → Invite a collaborator` i dodaj `@BiznesportTech`
+
+**Nie twórz PR wcześniej** – wszelkie zmiany po otwarciu PR są od razu widoczne dla reviewera.
+
+---
+
+## Reset bazy przed oddaniem
+
+Jeżeli podczas testów ręcznie edytowano lub usuwano wiadomości, baza może nie zawierać pełnych 3 rekordów z seedera. Przed oddaniem projektu warto zresetować wszystko do stanu początkowego:
+
+```bash
+docker compose down -v
+docker compose up -d
+docker exec backend_api npx sequelize-cli db:seed:all
+```
+
+- `down -v` – zatrzymuje kontenery i usuwa wolumen `db-vol` (czyści bazę)
+- `up -d` – startuje kontenery, migracje lecą automatycznie (pusta tabela `Messages`)
+- `db:seed:all` – wstawia 3 przykładowe wiadomości z seedera
+
+Po tym projekt jest w czystym stanie: tabela `Messages` istnieje, zawiera dokładnie 3 wiadomości z seedera, frontend działa na `http://localhost:3000`.
